@@ -1,11 +1,11 @@
-"szolg_azon";"nev";"tipus";"ep_azon"
-1;"Álomváros Gimnázium";"Oktatás";104
-2;"Iskolai sportcsarnok";"Oktatás";105
-3;"Iskolai sportcsarnok";"Sportlétesítmény";105
-4;"Központi Kórház";"Egészségügy";106
-5;"Buszpályaudvar";"Közlekedés";107
-6;"Csillag ABC";"Kereskedelem";108
-7;"Amped Music Kft.";"Kereskedelem";109
-8;"Amped Music Kft.";"Rendezvényhelyszín";109
-9;"Aranytányér Étterem";"Vendéglátás";201
-10;"Domomkos Egyetem";"Oktatás";202
+szolg_azon;nev;tipus;ep_azon
+1;Álomváros Gimnázium;Oktatás;104
+2;Iskolai sportcsarnok;Oktatás;105
+3;Iskolai sportcsarnok;Sportlétesítmény;105
+4;Központi Kórház;Egészségügy;106
+5;Buszpályaudvar;Közlekedés;107
+6;Csillag ABC;Kereskedelem;108
+7;Amped Music Kft.;Kereskedelem;109
+8;Amped Music Kft.;Rendezvényhelyszín;109
+9;Aranytányér Étterem;Vendéglátás;201
+10;Domomkos Egyetem;Oktatás;202
