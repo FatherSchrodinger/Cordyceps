@@ -3,7 +3,7 @@
 epuletek = open("epuletek.csv")
 lakosok = open("lakosok.csv")
 services = open("szolgaltatasok")
-varosfejl = open("varosfejlesztes.csv")
+varosfejl = open("varosfejlesztes.csv","r",encoding="utf8")
 
 ############################################################################################################
 
