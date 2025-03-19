@@ -1,4 +1,5 @@
 #alap adatok beolvasása:
+#valószínűleg a szóközök a hibásak, azokat is sornak számítja, 6 szóköz + 6 rendes info = 12 sor
 ############################################################################################################
 epuletek = open("epuletek.csv","r",encoding="utf8")
 lakosok = open("lakosok.csv","r",encoding="utf8")
@@ -6,7 +7,8 @@ services = open("szolgaltatasok.csv","r",encoding="utf8")
 varosfejl = open("varosfejlesztes.csv","r",encoding="utf8")
 ###############################
 temp = epuletek.readline()
-temp1 = temp.split(";")
+temp1 = temp.strip()
+temp1 = temp1.split(";")
 doublelist = []
 #print (temp.split(";"))
 # counter = 0
