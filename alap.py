@@ -4,7 +4,7 @@ epuletek = open("epuletek.csv","r",encoding="utf8")
 lakosok = open("lakosok.csv","r",encoding="utf8")
 services = open("szolgaltatasok.csv","r",encoding="utf8")
 varosfejl = open("varosfejlesztes.csv","r",encoding="utf8")
-##############################
+################################
 temp = epuletek.readline()
 temp1 = temp.split(";")
 #print (temp.split(";"))
