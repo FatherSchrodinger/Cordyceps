@@ -85,7 +85,7 @@ lakosok_szama = len(lakosok_list)
 
 ###Új Épület építése
 
-construction_projects = []
+leendo_epuletek = []
 
 def uj_epulet_epitese():
     global penzkeret
@@ -112,7 +112,7 @@ def uj_epulet_epitese():
 
     havi_koltseg = koltseg // projekt_ido_honap
 
-    construction_projects.append({
+    leendo_epuletek.append({
         "nev": nev,
         "tipus": tipus,
         "epitesi_ev": befejezes.year,
@@ -126,30 +126,104 @@ def uj_epulet_epitese():
     print(f"📉 Havonta levonásra kerül: {havi_koltseg} arany.")
 
 
+
+
+
+javitando_epuletek = []
+def karbantartas():
+    global penzkeret, lakosok_elegedettsege
+    print("\n--- Karbantartás meglévő épületeken ---")
+    # Ha nincs épület, nincs mit karbantartani
+    if not epuletek_list:
+        print("Nincsenek karbantartásra szoruló épületek!")
+        return
+    # Meglévő épületek listázása
+    print("Válassz egy épületet karbantartásra:")
+    for i, epulet in enumerate(epuletek_list, start=1):
+        print(f"{i}. {epulet.nev} ({epulet.tipus}) - {epulet.hasznos_terulet_m2} m²")
+    # Felhasználói választás
+    try:
+        valasztott_index = int(input("Írd be az épület számát: ")) - 1
+        if valasztott_index < 0 or valasztott_index >= len(epuletek_list):
+            print("Érvénytelen választás.")
+            return
+    except ValueError:
+        print("Hibás bemenet, számot adj meg!")
+        return
+    epulet = epuletek_list[valasztott_index]
+    koltseg = int(input("💰 Projekt költsége: "))
+    projekt_ido_honap = random.randint(1, 6)
+    if penzkeret < koltseg:
+        print("Nincs elég pénzed a karbantartásra!")
+        return
+    kezdes = kezdo_datum
+
+    befejezes = kezdes + relativedelta(months=projekt_ido_honap)
+
+    havi_koltseg = koltseg // projekt_ido_honap
+
+    nev = epulet.nev
+
+    tipus = epulet.tipus
+
+    hasznos_terulet_m2 = epulet.hasznos_terulet_m2
+
+    javitando_epuletek.append({
+        "nev": nev,
+        "tipus": tipus,
+        "epitesi_ev": befejezes.year,
+        "hasznos_terulet_m2": hasznos_terulet_m2,
+        "befejezes": befejezes,
+        "havi_koltseg": havi_koltseg,
+        "hatralevo_honap": projekt_ido_honap
+    })
+    print(f"Karbantartási projekt indult: {epulet.nev}, befejezés várhatóan {befejezes.strftime('%Y.%m.%d')}.")
+    print(f"📉 Havonta levonásra kerül: {havi_koltseg} arany.")
+    
+
+
+
 ###Futatható szimuláció
 
 for honap in range(fordulok_szama):
     print(f"\n=== {kezdo_datum.strftime('%Y-%m')} hónap kezdete ===")
+    if penzkeret <= 0:
+        print("\n A város csődbe ment! Nincs több pénz fejlesztésre.")
+        break
+    
+    if lakosok_elegedettsege < min_elegedettseg:
+        print("\n A lakosok túl elégedetlenek! A városvezetést leváltották.")
+        break
 
-    for project in construction_projects:
+    for project in leendo_epuletek:
+        if project["hatralevo_honap"] > 0:
+            penzkeret -= project["havi_koltseg"]
+            project["hatralevo_honap"] -= 1
+    
+    for project in javitando_epuletek:
         if project["hatralevo_honap"] > 0:
             penzkeret -= project["havi_koltseg"]
             project["hatralevo_honap"] -= 1
 
     havi_koltseg = sum(szolg.havi_koltseg for szolg in szolgaltatasok_list)
     penzkeret -= havi_koltseg
-
+    
     print(f"Havi fenntartási költségek: {havi_koltseg} arany")
-    print(f"🏗️ Építkezési költségek ebben a hónapban: {sum(p['havi_koltseg'] for p in construction_projects if p['hatralevo_honap'] > 0)} arany")
+    print(f"🏗️ Építkezési költségek ebben a hónapban: {sum(p['havi_koltseg'] for p in leendo_epuletek if p['hatralevo_honap'] > 0)} arany")
+    print(f"🏗️ Karbantartási költségek ebben a hónapban: {sum(k['havi_koltseg'] for k in javitando_epuletek if k['hatralevo_honap'] > 0)} arany")
     print(f"💰 Maradék pénzkeret: {penzkeret} arany")
 
-    valtozas = int(input("🔄 0: Kihagy | 1: Építés: "))
-    if valtozas == 1:
+    valtozas = int(input("🔄 0: Kihagy | 1: Építés | 2: Karbantarás: "))
+    if valtozas == 0:
+        continue
+    elif valtozas == 1:
         uj_epulet_epitese()
+    elif valtozas == 2: 
+        karbantartas()
 
-    completed_projects = [p for p in construction_projects if p["befejezes"] <= kezdo_datum]
+    elkeszult_projektek = [p for p in leendo_epuletek if p["befejezes"] <= kezdo_datum]
 
-    for project in completed_projects:
+    for project in elkeszult_projektek:
         uj_epulet = Epuletek(len(epuletek_list) + 1, project["nev"], project["tipus"], project["epitesi_ev"], project["hasznos_terulet_m2"])
         epuletek_list.append(uj_epulet)
 
@@ -164,7 +238,18 @@ for honap in range(fordulok_szama):
             print(f"🏠 +{uj_lakosok} új lakos érkezett!")
 
 
-    construction_projects = [p for p in construction_projects if p["befejezes"] > kezdo_datum]
+    javitando_epuletek = [k for k in javitando_epuletek if k["befejezes"] > kezdo_datum]
+
+    for project in javitando_epuletek:
+        for epulet in epuletek_list:
+            if epulet.nev == project["nev"]:
+                epulet.allapot = min(epulet.allapot + random.randint(10, 20), 100)  # Max 100%
+                print(f"✅ Karbantartás befejezve: {epulet.nev}, új állapot: {epulet.allapot}%")
+                break
+        lakosok_elegedettsege = min(lakosok_elegedettsege + random.randint(1, 10), 100)
+
+    javitando_epuletek = [k for k in javitando_epuletek if k["befejezes"] > kezdo_datum]
+
 
     kezdo_datum += relativedelta(months=1)
 
