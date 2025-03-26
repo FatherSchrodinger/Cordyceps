@@ -10,7 +10,7 @@ min_elegedettseg = int(input(f"📉 Add meg az elvárt minimális elégedettség
 
 kezdo_datum = input("📅 Add meg a szimuláció kezdő dátumát (YYYY-MM-DD): ")
 kezdo_datum = datetime.strptime(kezdo_datum, "%Y-%m-%d")
-
+ 
 fordulok_szama = int(input("🔄 Add meg a szimuláció hosszát (hónapokban): "))
 
 print("\n--- Szimulációs beállítások ---")
@@ -55,7 +55,8 @@ class Varosfejlesztes:
         self.kezdes = datetime.strptime(kezdes.split()[0], "%Y.%m.%d").date()
         self.befejezes = datetime.strptime(befejezes.split()[0], "%Y.%m.%d").date()
 
-
+    def __repr__(self):
+            return f"Lakosok(projekt_azon={self.projekt_azon}, nev={self.nev}, koltseg(arany)={self.koltseg_arany}, kezdes={self.kezdes}, befejezes={self.befejezes})"
 class Szolgaltatasok:
     def __init__(self, szolg_azon, nev, tipus, ep_azon):
         self.szolg_azon = int(szolg_azon)
@@ -63,6 +64,8 @@ class Szolgaltatasok:
         self.tipus = tipus
         self.ep_azon = int(ep_azon)
         self.havi_koltseg = random.randint(500, 3500)
+
+
 
     def __repr__(self):
         return f"Szolgaltatasok(szolg_azon={self.szolg_azon}, nev={self.nev}, tipus={self.tipus}, ep_azon={self.ep_azon}, havi_koltseg={self.havi_koltseg})"
@@ -82,6 +85,13 @@ varosfejlesztes_list = load_data("Varosfejlesztes.csv", Varosfejlesztes)
 szolgaltatasok_list = load_data("Szolgaltatasok.csv", Szolgaltatasok)
 
 lakosok_szama = len(lakosok_list)
+
+
+# szolg_havi_koltseg = 0 
+# for szolg in szolgaltatasok_list:
+#     szolg_havi_koltseg += szolg.havi_koltseg
+
+
 
 ###Új Épület építése
 
