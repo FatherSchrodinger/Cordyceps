@@ -281,6 +281,8 @@ for honap in range(fordulok_szama):
     print(f"🏗️ Építkezési költségek ebben a hónapban: {sum(p['havi_koltseg'] for p in leendo_epuletek if p['hatralevo_honap'] > 0)} arany")
     print(f"🏗️ Karbantartási költségek ebben a hónapban: {sum(k['havi_koltseg'] for k in javitando_epuletek if k['hatralevo_honap'] > 0)} arany")
     print(f"💰 Maradék pénzkeret: {penzkeret} arany")
+    kezdo_datum += relativedelta(months=1).normalized()
+    mentes_fajlba()
     valtozas = int(input("🔄 0: Kihagy | 1: Építés | 2: Karbantarás: "))
     if valtozas == 0:
         continue
@@ -288,7 +290,4 @@ for honap in range(fordulok_szama):
         uj_epulet_epitese()
     elif valtozas == 2: 
         karbantartas()
-    kezdo_datum += relativedelta(months=1)
-    mentes_fajlba()
-
 print("\n🏁 A szimuláció véget ért!")
