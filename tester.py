@@ -10,7 +10,7 @@ min_elegedettseg = int(input(f"📉 Add meg az elvárt minimális elégedettség
 
 kezdo_datum = input("📅 Add meg a szimuláció kezdő dátumát (YYYY-MM-DD): ")
 kezdo_datum = datetime.strptime(kezdo_datum, "%Y-%m-%d")
- 
+
 fordulok_szama = int(input("🔄 Add meg a szimuláció hosszát (hónapokban): "))
 
 print("\n--- Szimulációs beállítások ---")
@@ -87,9 +87,6 @@ szolgaltatasok_list = load_data("Szolgaltatasok.csv", Szolgaltatasok)
 lakosok_szama = len(lakosok_list)
 
 
-# szolg_havi_koltseg = 0 
-# for szolg in szolgaltatasok_list:
-#     szolg_havi_koltseg += szolg.havi_koltseg
 
 
 
@@ -150,7 +147,7 @@ def karbantartas():
     # Meglévő épületek listázása
     print("Válassz egy épületet karbantartásra:")
     for i, epulet in enumerate(epuletek_list, start=1):
-        print(f"{i}. {epulet.nev} ({epulet.tipus}) - {epulet.hasznos_terulet_m2} m²")
+        print(f"{i}. {epulet.nev} ({epulet.tipus}) - {epulet.hasznos_terulet_m2} m²: {epulet.allapot}")
     # Felhasználói választás
     try:
         valasztott_index = int(input("Írd be az épület számát: ")) - 1
@@ -191,11 +188,46 @@ def karbantartas():
     print(f"📉 Havonta levonásra kerül: {havi_koltseg} arany.")
     
 
+def mentes_fajlba():
+    fajlnev = "varos_naplo.txt"
+     # Az aktuális dátum és idő beszúrása a naplóba
+    idobelyeg = datetime.strftime(kezdo_datum, "%Y-%m-%d")
+    with open(fajlnev, "a", encoding="utf-8") as fajl:
+        fajl.write(f"\n=== {idobelyeg} - Forduló vége ===\n")
+        # Események kiírása, ha van
+        # if esemenyek:
+        #     fajl.write("\nEsemények:\n")
+        #     for esemeny in esemenyek:
+        #         fajl.write(f"- {esemeny}\n")
+        # else:
+        #     fajl.write("\nNincs új esemény ebben a fordulóban.\n")
 
+        # Város állapota
+        fajl.write("\nVáros aktuális állapota:\n")
+        fajl.write(f"- Lakosság elégedettsége: {lakosok_elegedettsege}%\n")
+        fajl.write(f"- Rendelkezésre álló pénzkeret: {penzkeret} arany\n")
+
+        # Épületek állapotának listázása
+        fajl.write("\nÉpületek állapota:\n")
+        for epulet in epuletek_list:
+            fajl.write(f"- {epulet.nev} (Típus: {epulet.tipus}, Állapot: {epulet.allapot})\n")
+
+        fajl.write("\n" + "="*40 + "\n")
+
+    print(f"A jelenlegi forduló adatai elmentve: {fajlnev}")
+
+
+epuletek_allapota = []
+for ep in epuletek_list:
+    epuletek_allapota.append(ep.allapot)
+
+    
 
 ###Futatható szimuláció
 
 for honap in range(fordulok_szama):
+    havi_koltseg = sum(szolg.havi_koltseg for szolg in szolgaltatasok_list)
+    penzkeret -= havi_koltseg
     print(f"\n=== {kezdo_datum.strftime('%Y-%m')} hónap kezdete ===")
     if penzkeret <= 0:
         print("\n A város csődbe ment! Nincs több pénz fejlesztésre.")
@@ -214,22 +246,6 @@ for honap in range(fordulok_szama):
         if project["hatralevo_honap"] > 0:
             penzkeret -= project["havi_koltseg"]
             project["hatralevo_honap"] -= 1
-
-    havi_koltseg = sum(szolg.havi_koltseg for szolg in szolgaltatasok_list)
-    penzkeret -= havi_koltseg
-    
-    print(f"Havi fenntartási költségek: {havi_koltseg} arany")
-    print(f"🏗️ Építkezési költségek ebben a hónapban: {sum(p['havi_koltseg'] for p in leendo_epuletek if p['hatralevo_honap'] > 0)} arany")
-    print(f"🏗️ Karbantartási költségek ebben a hónapban: {sum(k['havi_koltseg'] for k in javitando_epuletek if k['hatralevo_honap'] > 0)} arany")
-    print(f"💰 Maradék pénzkeret: {penzkeret} arany")
-
-    valtozas = int(input("🔄 0: Kihagy | 1: Építés | 2: Karbantarás: "))
-    if valtozas == 0:
-        continue
-    elif valtozas == 1:
-        uj_epulet_epitese()
-    elif valtozas == 2: 
-        karbantartas()
 
     elkeszult_projektek = [p for p in leendo_epuletek if p["befejezes"] <= kezdo_datum]
 
@@ -253,15 +269,26 @@ for honap in range(fordulok_szama):
     for project in javitando_epuletek:
         for epulet in epuletek_list:
             if epulet.nev == project["nev"]:
-                epulet.allapot = min(epulet.allapot + random.randint(10, 20), 100)  # Max 100%
-                print(f"✅ Karbantartás befejezve: {epulet.nev}, új állapot: {epulet.allapot}%")
+                epulet.allapot = min(epulet.allapot + random.randint(1, 5), 5) 
+                print(f"✅ Karbantartás befejezve: {epulet.nev}, új állapot: {epulet.allapot}")
                 break
         lakosok_elegedettsege = min(lakosok_elegedettsege + random.randint(1, 10), 100)
 
     javitando_epuletek = [k for k in javitando_epuletek if k["befejezes"] > kezdo_datum]
 
-
+    
+    print(f"Havi fenntartási költségek: {havi_koltseg} arany")
+    print(f"🏗️ Építkezési költségek ebben a hónapban: {sum(p['havi_koltseg'] for p in leendo_epuletek if p['hatralevo_honap'] > 0)} arany")
+    print(f"🏗️ Karbantartási költségek ebben a hónapban: {sum(k['havi_koltseg'] for k in javitando_epuletek if k['hatralevo_honap'] > 0)} arany")
+    print(f"💰 Maradék pénzkeret: {penzkeret} arany")
+    valtozas = int(input("🔄 0: Kihagy | 1: Építés | 2: Karbantarás: "))
+    if valtozas == 0:
+        continue
+    elif valtozas == 1:
+        uj_epulet_epitese()
+    elif valtozas == 2: 
+        karbantartas()
     kezdo_datum += relativedelta(months=1)
+    mentes_fajlba()
 
 print("\n🏁 A szimuláció véget ért!")
-
