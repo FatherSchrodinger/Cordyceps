@@ -1,0 +1,3 @@
+1. Amint egy év eléri a 12-ik hónapját nem nővekszik a következő évre. Ehelyett leáll a 12-ik hónapnál és csak azt írja ki, a pénz és a körszám viszont csökken.
+2. Generálnom kéne egy épület azonosítot az új épületekhez, ezt megbeszéltük. Itt hagyom jegyzetként.
+3. A karbantartas() funkciónál(inkább annak a folytatásának a fordulatos mechanikánál) nem von le rendesen a havi költséget. Átnézem még
