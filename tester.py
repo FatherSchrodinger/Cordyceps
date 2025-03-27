@@ -1,17 +1,55 @@
 import csv
 import random
 from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
+# from dateutil.relativedelta import relativedelta
 
-#kiinduló paraméterek
-penzkeret = int(input("💰 Add meg az induló pénzkeretet (100000+ ajánlott): "))
-lakosok_elegedettsege = int(input("😊 Add meg a lakosok induló elégedettségét (1-99): "))
-min_elegedettseg = int(input(f"📉 Add meg az elvárt minimális elégedettséget (1-{lakosok_elegedettsege-1}): "))
+# kiinduló paraméterek
+while True:
+    try:
+        penzkeret = int(input("💰 Add meg az induló pénzkeretet (100000+ ajánlott): "))
+        if penzkeret <= 0:
+            print("Egy 0-nál nagyobb egész számot adj meg.")
+            continue
+    except ValueError:
+        print("Egy 0-nál nagyobb egész számot adj meg.")
+        continue
 
-kezdo_datum = input("📅 Add meg a szimuláció kezdő dátumát (YYYY-MM-DD): ")
-kezdo_datum = datetime.strptime(kezdo_datum, "%Y-%m-%d")
+    try:
+        lakosok_elegedettsege = int(input("😊 Add meg a lakosok induló elégedettségét (1-99): "))
+        if lakosok_elegedettsege <= 0 or lakosok_elegedettsege > 99:
+            print("Egy 0 és 100 közötti egész számot adj meg.")
+            continue 
+    except ValueError:
+        print("Egy 0 és 100 közötti egész számot adj meg.")
+        continue 
 
-fordulok_szama = int(input("🔄 Add meg a szimuláció hosszát (hónapokban): "))
+    try:
+        min_elegedettseg = int(input(f"📉 Add meg az elvárt minimális elégedettséget (1-{lakosok_elegedettsege-1}): "))
+        if min_elegedettseg <= 0 or min_elegedettseg >= lakosok_elegedettsege:
+            print("Egy 0-nál nagyobb számot adj meg, ami kisebb, mint a lakosok induló elégedettsége.")
+            continue 
+    except ValueError:
+        print("Egy 0-nál nagyobb számot adj meg, ami kisebb, mint a lakosok induló elégedettsége.")
+        continue 
+
+    while True:
+        kezdo_datum = input("📅 Add meg a szimuláció kezdő dátumát (YYYY-MM-DD): ")
+        try:
+            kezdo_datum = datetime.strptime(kezdo_datum, "%Y-%m-%d")
+            break 
+        except ValueError:
+            print("Érvénytelen dátum formátum. Használj YYYY-MM-DD formátumot.")
+
+    try:
+        fordulok_szama = int(input("🔄 Add meg a szimuláció hosszát (hónapokban): "))
+        if fordulok_szama <= 0:
+            print("Adja meg a szimuláció hosszát egy pozitív egész számként.")
+            continue 
+    except ValueError:
+        print("Egy 0-nál nagyobb egész számot adj meg.")
+        continue 
+
+    break
 
 print("\n--- Szimulációs beállítások ---")
 print(f"💰 Pénzkeret: {penzkeret} arany")
@@ -304,7 +342,7 @@ if abs(osszes_valoszinuseg - 1.0) > 0.0001:
 import random
 
 def varatlan_esemeny():
-    global penzkeret, lakosok_elegedettsege, epuletek_list
+    global penzkeret, lakosok_elegedettsege, epuletek_list, esemény
     esemeny = random.choices(esemenyek, weights=[e["valoszinuseg"] for e in esemenyek])[0]
     
     if esemeny["nev"] == "Nem történt semmi":
@@ -348,9 +386,8 @@ def mentes_fajlba():
         fajl.write(f"\n=== {idobelyeg} - Forduló vége ===\n")
         # Események kiírása, ha van
         if esemenyek:
-            fajl.write("\nEsemények:\n")
-            for esemeny in esemenyek:
-                fajl.write(f"- {esemeny}\n")
+            fajl.write("\nEsemény:\n")
+            fajl.write(f"- {esemeny}\n")
         else:
             fajl.write("\nNincs új esemény ebben a fordulóban.\n")
 
