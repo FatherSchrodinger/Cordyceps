@@ -126,38 +126,32 @@ def uj_epulet_epitese():
     global penzkeret
     print("\n--- Új épület építése ---")
     while True:
-        ep_azon = ep_azon_generálása()
-        projekt_azon = projekt_azon_generálása()
-        nev = input("🏗️ Épület neve: ").strip().capitalize()
-        if not nev:
-            print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes nevet az épületnek.")
-            continue
-        tipus = input("🏢 Épület típusa (lakóház, iroda, stb.): ").strip().capitalize()
-        if not tipus:
-            print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes épülettípust.")
-            continue
         try:
+            ep_azon = ep_azon_generálása()
+            projekt_azon = projekt_azon_generálása()
+            nev = input("🏗️ Épület neve: ").strip().capitalize()
+            if not nev:
+                print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes nevet az épületnek.")
+                continue
+            tipus = input("🏢 Épület típusa (lakóház, iroda, stb.): ").strip().capitalize()
+            if not tipus:
+                print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes épülettípust.")
+                continue
             hasznos_terulet_m2 = int(input("📏 Hasznos terület (m²): ").strip())
             if hasznos_terulet_m2 <= 0:
                 print("❌ Hibás bemenet! Kérlek, adj meg egy pozitív egész számot.")
                 continue
-        except ValueError:
-            print("❌ Hibás bemenet! Kérlek, számot adj meg.")
-            continue
-        try:
             koltseg = int(input("💰 Projekt költsége: ").strip())
             if koltseg <= 0:
                 print("❌ Hibás bemenet! A költségnek 0-nál nagyobbnak kell lennie.")
                 continue
+            projekt_ido_honap = random.randint(3, 12)
+
+            if penzkeret < koltseg:
+                print("❌ Nincs elég pénzed az építéshez!")
+                continue
         except ValueError:
-            print("❌ Hibás bemenet! Kérlek, számot adj meg.")
-            continue
-        projekt_ido_honap = random.randint(3, 12)
-
-        if penzkeret < koltseg:
-            print("❌ Nincs elég pénzed az építéshez!")
-            continue
-
+            print("❌ Hiba: Érvénytelen bemenet! Kérlek, próbáld újra")
         kezdes = kezdo_datum
         befejezes = kezdes + relativedelta(months=projekt_ido_honap)
         havi_koltseg = koltseg // projekt_ido_honap
@@ -196,37 +190,30 @@ def karbantartas():
 
     print("\n--- Karbantartás meglévő épületeken ---")
     while True:
-        projekt_azon = projekt_azon_generálása()
-        if not epuletek_list:
-            print("❌ Nincsenek karbantartásra szoruló épületek!")
-            continue
-        print("🔧 Válassz egy épületet karbantartásra:")
-        for i, epulet in enumerate(epuletek_list, start=1):
-            print(f"{i}. {epulet.nev} ({epulet.tipus}) - {epulet.hasznos_terulet_m2} m² | Állapot: {epulet.allapot}/5")
-
         try:
+            projekt_azon = projekt_azon_generálása()
+            if not epuletek_list:
+                print("❌ Nincsenek karbantartásra szoruló épületek!")
+                continue
+            print("🔧 Válassz egy épületet karbantartásra:")
+            for i, epulet in enumerate(epuletek_list, start=1):
+                print(f"{i}. {epulet.nev} ({epulet.tipus}) - {epulet.hasznos_terulet_m2} m² | Állapot: {epulet.allapot}/5")
+
             valasztott_index = int(input("🏗️ Írd be az épület számát: ")) - 1
             if valasztott_index < 0 or valasztott_index >= len(epuletek_list):
                 print("❌ Érvénytelen választás.")
                 continue
-        except ValueError:
-            print("❌ Hibás bemenet! Számot adj meg.")
-            continue
-
-        epulet = epuletek_list[valasztott_index]
-        try:
+            epulet = epuletek_list[valasztott_index]
             koltseg = int(input("💰 Projekt költsége: "))
             if koltseg <= 0:
                 print("Egy 0-nál nagyobb egész számot adj meg.")
                 continue
+            projekt_ido_honap = random.randint(1, 6)
+            if penzkeret < koltseg:
+                print("❌ Nincs elég pénzed a karbantartásra!")
+                continue
         except ValueError:
-            print("Egy 0-nál nagyobb egész számot adj meg.")
-        projekt_ido_honap = random.randint(1, 6)
-
-        if penzkeret < koltseg:
-            print("❌ Nincs elég pénzed a karbantartásra!")
-            continue
-
+            print("❌ Hiba: Érvénytelen bemenet! Kérlek, próbáld újra.")
         kezdes = kezdo_datum
         befejezes = kezdes + relativedelta(months=projekt_ido_honap)
 
@@ -261,35 +248,29 @@ def szolgaltatas_bevezetese():
     epuletek_azonositoi = []
     print("\n--- Új szolgáltatás létrehozása ---")
     while True:
-        for i, epulet in enumerate(epuletek_list, start=1):
-            epuletek_azonositoi.append(i)
-            print(f"{i}. {epulet.nev} ({epulet.tipus}) - ID: {epulet.ep_azon}")
+        try:
+            for i, epulet in enumerate(epuletek_list, start=1):
+                epuletek_azonositoi.append(i)
+                print(f"{i}. {epulet.nev} ({epulet.tipus}) - ID: {epulet.ep_azon}")
 
-        try:
-            uzemelteto_epulet = int(input("Adja meg a szolgáltatás üzemeltető épületnek a sorszámát: ").strip())
-            if uzemelteto_epulet not in epuletek_azonositoi:
-                print("❌ Hibás bemenet! Kérlek, egy létező számot adj meg.")
+                uzemelteto_epulet = int(input("Adja meg a szolgáltatás üzemeltető épületnek a sorszámát: ").strip())
+                if uzemelteto_epulet not in epuletek_azonositoi:
+                    print("❌ Hibás bemenet! Kérlek, egy létező számot adj meg.")
+                    continue
+            nev = input("🏗️ Szolgáltatás neve: ").strip().capitalize()
+            if not nev:
+                print("❌ Hibás bemenet! Kérlek, egy nevet adj meg az épületnek.")
                 continue
-        except ValueError:
-            print("❌ Hibás bemenet! Kérlek, egy létező számot adj meg.")
-            continue
-        nev = input("🏗️ Szolgáltatás neve: ").strip().capitalize()
-        if not nev:
-            print("❌ Hibás bemenet! Kérlek, egy nevet adj meg az épületnek.")
-            continue
-        tipus = input("🏢 Szolgáltatás típusa (egészségügy, oktatás, stb.): ").strip().capitalize()
-        if not tipus:
-                print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes szolgáltatástípust.")
-                continue
-        try:
+            tipus = input("🏢 Szolgáltatás típusa (egészségügy, oktatás, stb.): ").strip().capitalize()
+            if not tipus:
+                    print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes szolgáltatástípust.")
+                    continue
             havi_koltseg = int(input("💰 Szolgáltatás havi költsége: ").strip())
             if havi_koltseg <= 0:
                 print("Egy 0-nál nagyobb egész számot adj meg.")
                 continue
         except ValueError:
-            print("❌ Hibás bemenet! Kérlek, számot adj meg.")
-            continue
-
+            print("❌ Hiba: Érvénytelen bemenet! Kérlek, próbáld újra.")
         uj_szolg_id = max((szolg.szolg_azon for szolg in szolgaltatasok_list), default=0) + 1
 
         uj_szolgaltatas = Szolgaltatasok(uj_szolg_id, nev, tipus, uzemelteto_epulet)
@@ -307,29 +288,27 @@ def szolgaltatas_bevezetese():
 def szolgaltatas_torlese():
     global szolgaltatasok_list, lakosok_elegedettsege
     while True:
-        if not szolgaltatasok_list:
-            print("❌ Nincs elérhető szolgáltatás a törléshez!")
-            continue
-        print("\n--- Szolgáltatás törlése ---")
-        for i, szolg in enumerate(szolgaltatasok_list, start=1):
-            print(f"{i}. {szolg.nev} ({szolg.tipus}) - Havi költség: {szolg.havi_koltseg} arany")
         try:
+            if not szolgaltatasok_list:
+                print("❌ Nincs elérhető szolgáltatás a törléshez!")
+                continue
+            print("\n--- Szolgáltatás törlése ---")
+            for i, szolg in enumerate(szolgaltatasok_list, start=1):
+                print(f"{i}. {szolg.nev} ({szolg.tipus}) - Havi költség: {szolg.havi_koltseg} arany")
             valasztott_index = int(input("Válassz egy szolgáltatást törlésre (szám): ")) - 1
             if valasztott_index < 0 or valasztott_index >= len(szolgaltatasok_list):
                 print("❌ Érvénytelen választás!")
                 continue
+            torolt_szolgaltatas = szolgaltatasok_list.pop(valasztott_index)
+            print(f"🗑️ A(z) {torolt_szolgaltatas.nev} szolgáltatás törölve lett.")
+            csokkenes = random.randint(5, 15)
+            lakosok_elegedettsege = max(lakosok_elegedettsege - csokkenes, 0)
+            print(f"📉 Lakosok elégedettsége csökkent: -{csokkenes}% (Új érték: {lakosok_elegedettsege}%)")
+            aktualis_havi_koltseg = sum(szolg.havi_koltseg for szolg in szolgaltatasok_list)
+            print(f"📊 Új havi fenntartási költség: {aktualis_havi_koltseg} arany")
+            break
         except ValueError:
-            print("❌ Hibás bemenet! Számot adj meg.")
-            continue
-        torolt_szolgaltatas = szolgaltatasok_list.pop(valasztott_index)
-        print(f"🗑️ A(z) {torolt_szolgaltatas.nev} szolgáltatás törölve lett.")
-        csokkenes = random.randint(5, 15)
-        lakosok_elegedettsege = max(lakosok_elegedettsege - csokkenes, 0)
-        print(f"📉 Lakosok elégedettsége csökkent: -{csokkenes}% (Új érték: {lakosok_elegedettsege}%)")
-        aktualis_havi_koltseg = sum(szolg.havi_koltseg for szolg in szolgaltatasok_list)
-        print(f"📊 Új havi fenntartási költség: {aktualis_havi_koltseg} arany")
-        break
-
+            print("❌ Hiba: Érvénytelen bemenet! Kérlek, próbáld újra.")
 esemenyek = [
     {"nev": "Nem történt semmi", "valoszinuseg": 0.5, "penz_valtozas": 0, "elegedettseg_valtozas": 0, "epulet_kar": None, "leiras": "Nincs változás."},
     {"nev": "Fellázadás", "valoszinuseg": 0.07, "penz_valtozas": -10000, "elegedettseg_valtozas": -20, "epulet_kar": None, "leiras": "A lakosság fellázad, ami pénzügyi és elégedettségi csökkenést okoz."},
@@ -439,10 +418,6 @@ if penzkeret > 0 and lakosok_elegedettsege > min_elegedettseg:
                 if "levonas_kezdete" not in project and "levonas_vege" not in project:
                     project["levonas_kezdete"] = project["kezdes"]
                     project["levonas_vege"] = project["befejezes"] - relativedelta(months=1)
-
-                # if project["levonas_kezdete"] <= kezdo_datum < project["levonas_vege"]:
-                #     penzkeret -= project["havi_koltseg"]
-                #     project["hatralevo_honap"] -= 1
 
 
         elkeszult_projektek = [p for p in leendo_epuletek if p["befejezes"] <= kezdo_datum and not p.get("kesz", False)]
