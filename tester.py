@@ -23,6 +23,9 @@ while True:
         if min_elegedettseg <= 0 or min_elegedettseg >= lakosok_elegedettsege:
             print("Egy 0-nál nagyobb számot adj meg, ami kisebb, mint a lakosok induló elégedettsége.")
             continue
+        elif lakosok_elegedettsege == 1:
+            min_elegedettseg = 0
+            print("A lakosok minimális elégedettsége alapértelmezetten 0, a lakosok megadott induló elegedettsége miatt.")
     except ValueError:
         print("Egy 0-nál nagyobb számot adj meg, ami kisebb, mint a lakosok induló elégedettsége.")
         continue
@@ -311,8 +314,6 @@ def szolgaltatas_torlese():
         print(f"📊 Új havi fenntartási költség: {aktualis_havi_koltseg} arany")
         break
 
-import random
-
 esemenyek = [
     {"nev": "Nem történt semmi", "valoszinuseg": 0.4, "penz_valtozas": 0, "elegedettseg_valtozas": 0, "epulet_kar": None, "leiras": "Nincs változás."},
     {"nev": "Fellázadás", "valoszinuseg": 0.08, "penz_valtozas": -10000, "elegedettseg_valtozas": -20, "epulet_kar": None, "leiras": "A lakosság fellázad, ami pénzügyi és elégedettségi csökkenést okoz."},
@@ -324,7 +325,6 @@ esemenyek = [
     {"nev": "Anti-Krisztus", "valoszinuseg": 0.02, "penz_valtozas": 0, "elegedettseg_valtozas": -100, "epulet_kar": None, "leiras": "Az Anti-Krisztus megjelenése mély szellemi válságot és elégedettségvesztést okoz."},
     {"nev": "Idegen invázió", "valoszinuseg": 0.03, "penz_valtozas": "random", "elegedettseg_valtozas": -10, "epulet_kar": "random", "leiras": "Idegenek inváziója következik, amely károkat okozhat mind anyagi, mind szellemi szinten."}
 ]
-
 
 osszes_valoszinuseg = sum(e["valoszinuseg"] for e in esemenyek)
 if abs(osszes_valoszinuseg - 1.0) > 0.0001:
@@ -463,7 +463,6 @@ if penzkeret > 0 and lakosok_elegedettsege > min_elegedettseg and lakosok_eleged
         print(f"Lakosok elégedettsége: {lakosok_elegedettsege}%")
         print(f" A város lakossága: {lakosok_szama} fő")
         print(f"💰 Maradék pénzkeret: {penzkeret} arany")
-
 
         kezdo_datum += relativedelta(months=1).normalized()
         mentes_fajlba()
