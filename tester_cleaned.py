@@ -251,23 +251,22 @@ def szolgaltatas_bevezetese():
     epuletek_azonositoi = []
     print("\n--- Új szolgáltatás létrehozása ---")
     while True:
+        for i, epulet in enumerate(epuletek_list, start=1):
+            epuletek_azonositoi.append(i)
+            print(f"{i}. {epulet.nev} ({epulet.tipus}) - ID: {epulet.ep_azon}")
         try:
-            for i, epulet in enumerate(epuletek_list, start=1):
-                epuletek_azonositoi.append(i)
-                print(f"{i}. {epulet.nev} ({epulet.tipus}) - ID: {epulet.ep_azon}")
-
-                uzemelteto_epulet = int(input("Adja meg a szolgáltatás üzemeltető épületnek a sorszámát: ").strip())
-                if uzemelteto_epulet not in epuletek_azonositoi:
-                    print("❌ Hibás bemenet! Kérlek, egy létező számot adj meg.")
-                    continue
+            uzemelteto_epulet = int(input("Adja meg a szolgáltatás üzemeltető épületnek a sorszámát: ").strip())
+            if uzemelteto_epulet not in epuletek_azonositoi:
+                print("❌ Hibás bemenet! Kérlek, egy létező számot adj meg.")
+                continue
             nev = input("🏗️ Szolgáltatás neve: ").strip().capitalize()
             if not nev:
                 print("❌ Hibás bemenet! Kérlek, egy nevet adj meg az épületnek.")
                 continue
             tipus = input("🏢 Szolgáltatás típusa (egészségügy, oktatás, stb.): ").strip().capitalize()
             if not tipus:
-                    print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes szolgáltatástípust.")
-                    continue
+                print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes szolgáltatástípust.")
+                continue
             havi_koltseg = int(input("💰 Szolgáltatás havi költsége: ").strip())
             if havi_koltseg <= 0:
                 print("Egy 0-nál nagyobb egész számot adj meg.")
