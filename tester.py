@@ -4,49 +4,35 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 while True:
-    penzkeret = int(input("💰 Add meg az induló pénzkeretet (200000+ arany ajánlott): "))
-    if penzkeret <= 0:
-        print("Egy 0-nál nagyobb egész számot adj meg.")
-        continue
     try:
+        penzkeret = int(input("💰 Add meg az induló pénzkeretet (200000+ arany ajánlott): "))
+        if penzkeret <= 0:
+            print("Egy 0-nál nagyobb egész számot adj meg.")
+            continue
+
         lakosok_elegedettsege = int(input("😊 Add meg a lakosok induló elégedettségét (1-99): "))
-        if lakosok_elegedettsege <= 0 or lakosok_elegedettsege > 99:
-            print("Egy 0 és 100 közötti egész számot adj meg.")
+        if not (1 <= lakosok_elegedettsege <= 99):
+            print("Egy 1 és 99 közötti egész számot adj meg.")
             continue
-    except ValueError:
-        print("Egy 0 és 100 közötti egész számot adj meg.")
-        continue
 
-    try:
         min_elegedettseg = int(input(f"📉 Add meg az elvárt minimális elégedettséget (1-{lakosok_elegedettsege-1}): "))
-        if min_elegedettseg <= 0 or min_elegedettseg >= lakosok_elegedettsege:
-            print("Egy 0-nál nagyobb számot adj meg, ami kisebb, mint a lakosok induló elégedettsége.")
+        if not (1 <= min_elegedettseg < lakosok_elegedettsege):
+            print("Egy 1-nél nagyobb számot adj meg, ami kisebb, mint a lakosok induló elégedettsége.")
             continue
-        elif lakosok_elegedettsege == 1:
-            min_elegedettseg = 0
-            print("A lakosok minimális elégedettsége alapértelmezetten 0, a lakosok megadott induló elegedettsége miatt.")
-    except ValueError:
-        print("Egy 0-nál nagyobb számot adj meg, ami kisebb, mint a lakosok induló elégedettsége.")
-        continue
 
-    while True:
         kezdo_datum = input("📅 Add meg a szimuláció kezdő dátumát (YYYY-MM-DD): ")
-        try:
-            kezdo_datum = datetime.strptime(kezdo_datum, "%Y-%m-%d")
-            break
-        except ValueError:
-            print("Érvénytelen dátum formátum. Használj YYYY-MM-DD formátumot.")
+        kezdo_datum = datetime.strptime(kezdo_datum, "%Y-%m-%d")
 
-    try:
         fordulok_szama = int(input("🔄 Add meg a szimuláció hosszát (hónapokban): "))
         if fordulok_szama <= 0:
             print("Adja meg a szimuláció hosszát egy pozitív egész számként.")
             continue
-    except ValueError:
-        print("Egy 0-nál nagyobb egész számot adj meg.")
-        continue
 
-    break
+        break
+
+    except ValueError:
+        print("❌ Hiba: Érvénytelen bemenet! Kérlek, próbáld újra.")
+
 
 print("\n--- Szimulációs beállítások ---")
 print(f"💰 Pénzkeret: {penzkeret} arany")
@@ -139,36 +125,33 @@ def uj_epulet_epitese():
         if not nev:
             print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes nevet az épületnek.")
             continue
+        
         tipus = input("🏢 Épület típusa (lakóház, iroda, stb.): ").strip().capitalize()
         if not tipus:
             print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes épülettípust.")
             continue
+        
         try:
             hasznos_terulet_m2 = int(input("📏 Hasznos terület (m²): ").strip())
-            if hasznos_terulet_m2 <= 0:
-                print("❌ Hibás bemenet! Kérlek, adj meg egy pozitív egész számot.")
-                continue
-        except ValueError:
-            print("❌ Hibás bemenet! Kérlek, számot adj meg.")
-            continue
-        try:
             koltseg = int(input("💰 Projekt költsége: ").strip())
-            if koltseg <= 0:
-                print("❌ Hibás bemenet! A költségnek 0-nál nagyobbnak kell lennie.")
+            
+            if hasznos_terulet_m2 <= 0 or koltseg <= 0:
+                print("❌ Hibás bemenet! Kérlek, adj meg pozitív egész számokat.")
                 continue
         except ValueError:
-            print("❌ Hibás bemenet! Kérlek, számot adj meg.")
+            print("❌ Hibás bemenet! Kérlek, számokat adj meg.")
             continue
+        
         projekt_ido_honap = random.randint(3, 12)
-
+        
         if penzkeret < koltseg:
             print("❌ Nincs elég pénzed az építéshez!")
             continue
-
+        
         kezdes = kezdo_datum
         befejezes = kezdes + relativedelta(months=projekt_ido_honap)
         havi_koltseg = koltseg // projekt_ido_honap
-
+        
         leendo_epuletek.append({
             "ep_azon": ep_azon,
             "nev": nev,
@@ -179,7 +162,7 @@ def uj_epulet_epitese():
             "havi_koltseg": havi_koltseg,
             "hatralevo_honap": projekt_ido_honap
         })
-
+        
         print(f"🏗️ Építkezés elkezdődött: {nev}, várható befejezés: {befejezes.strftime('%Y.%m.%d')}.")
         print(f"📉 Havonta levonásra kerül: {havi_koltseg} arany.")
         break
@@ -314,22 +297,24 @@ def szolgaltatas_torlese():
         break
 
 esemenyek = [
-    {"nev": "Nem történt semmi", "valoszinuseg": 0.4, "penz_valtozas": 0, "elegedettseg_valtozas": 0, "epulet_kar": None, "leiras": "Nincs változás."},
-    {"nev": "Fellázadás", "valoszinuseg": 0.08, "penz_valtozas": -10000, "elegedettseg_valtozas": -20, "epulet_kar": None, "leiras": "A lakosság fellázad, ami pénzügyi és elégedettségi csökkenést okoz."},
-    {"nev": "Tornádó", "valoszinuseg": 0.05, "penz_valtozas": -15000, "elegedettseg_valtozas": -30, "epulet_kar": "random", "leiras": "Tornádó pusztítást végez, és károkat okozhat az épületekben."},
-    {"nev": "Csatorna törés", "valoszinuseg": 0.15, "penz_valtozas": -5000, "elegedettseg_valtozas": -10, "epulet_kar": None, "leiras": "A csatornarendszer törése problémákat okoz, és pénzügyi kárt."},
-    {"nev": "Erdőtűz", "valoszinuseg": 0.1, "penz_valtozas": -8000, "elegedettseg_valtozas": -15, "epulet_kar": "random", "leiras": "Erdőtűz keletkezik, ami pénzügyi veszteséget és elégedettségcsökkenést okoz."},
-    {"nev": "Arany eső", "valoszinuseg": 0.12, "penz_valtozas": +15000, "elegedettseg_valtozas": +5, "epulet_kar": None, "leiras": "Arany eső hull, ami gazdasági növekedést és enyhe elégedettség növekedést eredményez."},
-    {"nev": "Földrengés", "valoszinuseg": 0.05, "penz_valtozas": -20000, "elegedettseg_valtozas": -40, "epulet_kar": "random", "leiras": "Földrengés következik be, mely súlyos károkat és magas pénzügyi veszteséget okoz."},
-    {"nev": "Anti-Krisztus", "valoszinuseg": 0.02, "penz_valtozas": 0, "elegedettseg_valtozas": -100, "epulet_kar": None, "leiras": "Az Anti-Krisztus megjelenése mély szellemi válságot és elégedettségvesztést okoz."},
-    {"nev": "Idegen invázió", "valoszinuseg": 0.03, "penz_valtozas": "random", "elegedettseg_valtozas": -10, "epulet_kar": "random", "leiras": "Idegenek inváziója következik, amely károkat okozhat mind anyagi, mind szellemi szinten."}
+    {"nev": "Nem történt semmi", "valoszinuseg": 0.5, "penz_valtozas": 0, "elegedettseg_valtozas": 0, "epulet_kar": None, "leiras": "Nincs változás."},
+    {"nev": "Fellázadás", "valoszinuseg": 0.07, "penz_valtozas": -10000, "elegedettseg_valtozas": -20, "epulet_kar": None, "leiras": "A lakosság fellázad, ami pénzügyi és elégedettségi csökkenést okoz."},
+    {"nev": "Tornádó", "valoszinuseg": 0.04, "penz_valtozas": -15000, "elegedettseg_valtozas": -30, "epulet_kar": "random", "leiras": "Tornádó pusztítást végez, és károkat okozhat az épületekben."},
+    {"nev": "Csatorna törés", "valoszinuseg": 0.04, "penz_valtozas": -5000, "elegedettseg_valtozas": -10, "epulet_kar": None, "leiras": "A csatornarendszer törése problémákat okoz, és pénzügyi kárt."},
+    {"nev": "Erdőtűz", "valoszinuseg": 0.08, "penz_valtozas": -8000, "elegedettseg_valtozas": -15, "epulet_kar": "random", "leiras": "Erdőtűz keletkezik, ami pénzügyi veszteséget és elégedettségcsökkenést okoz."},
+    {"nev": "Arany eső", "valoszinuseg": 0.09, "penz_valtozas": +15000, "elegedettseg_valtozas": +5, "epulet_kar": None, "leiras": "Arany eső hull, ami gazdasági növekedést és enyhe elégedettség növekedést eredményez."},
+    {"nev": "Földrengés", "valoszinuseg": 0.04, "penz_valtozas": -20000, "elegedettseg_valtozas": -40, "epulet_kar": "random", "leiras": "Földrengés következik be, mely súlyos károkat és magas pénzügyi veszteséget okoz."},
+    {"nev": "Anti-Krisztus", "valoszinuseg": 0.01, "penz_valtozas": 0, "elegedettseg_valtozas": -100, "epulet_kar": None, "leiras": "Az Anti-Krisztus megjelenése mély szellemi válságot és elégedettségvesztést okoz."},
+    {"nev": "Idegen invázió", "valoszinuseg": 0.02, "penz_valtozas": "random", "elegedettseg_valtozas": -10, "epulet_kar": "random", "leiras": "Idegenek inváziója következik, amely károkat okozhat mind anyagi, mind szellemi szinten."},
+    {"nev": "Gazdasági fellendülés", "valoszinuseg": 0.04, "penz_valtozas": +12000, "elegedettseg_valtozas": +10, "epulet_kar": None, "leiras": "A gazdaság fellendül, ami több bevételt és elégedettebb lakosokat eredményez."},
+    {"nev": "Tudományos felfedezés", "valoszinuseg": 0.03, "penz_valtozas": +8000, "elegedettseg_valtozas": +15, "epulet_kar": None, "leiras": "Egy új tudományos áttörés javítja az életszínvonalat és a gazdaságot."},
+    {"nev": "Kulturális fesztivál", "valoszinuseg": 0.04, "penz_valtozas": +5000, "elegedettseg_valtozas": +20, "epulet_kar": None, "leiras": "Egy sikeres fesztivál növeli az emberek elégedettségét és egy kis bevételt is hoz."}
 ]
 
 osszes_valoszinuseg = sum(e["valoszinuseg"] for e in esemenyek)
 if abs(osszes_valoszinuseg - 1.0) > 0.0001:
     raise ValueError("Az események valószínűségeinek összege nem 1! Jelenlegi érték: " + str(osszes_valoszinuseg))
 
-import random
 
 def varatlan_esemeny():
     global penzkeret, lakosok_elegedettsege, epuletek_list
@@ -407,7 +392,7 @@ for ep in epuletek_list:
 
 
 
-if penzkeret > 0 and lakosok_elegedettsege > min_elegedettseg and lakosok_elegedettsege < 100:
+if penzkeret > 0 and lakosok_elegedettsege > min_elegedettseg:
     for honap in range(fordulok_szama):
         havi_koltseg = sum(szolg.havi_koltseg for szolg in szolgaltatasok_list)
         penzkeret -= havi_koltseg
@@ -420,8 +405,9 @@ if penzkeret > 0 and lakosok_elegedettsege > min_elegedettseg and lakosok_eleged
                 penzkeret -= project["havi_koltseg"]
                 project["hatralevo_honap"] -= 1
 
-        elkeszult_projektek = [p for p in leendo_epuletek if p["befejezes"] <= kezdo_datum]
+        elkeszult_projektek = [p for p in leendo_epuletek if p["befejezes"] <= kezdo_datum and not p.get("kesz", False)]
         for project in elkeszult_projektek:
+            project["kesz"] = True
             uj_epulet = Epuletek(project["ep_azon"], project["nev"], project["tipus"], project["epitesi_ev"], project["hasznos_terulet_m2"])
             epuletek_list.append(uj_epulet)
             lakosok_elegedettsege = min(lakosok_elegedettsege + random.randint(1, 10), 100)
@@ -431,6 +417,7 @@ if penzkeret > 0 and lakosok_elegedettsege > min_elegedettseg and lakosok_eleged
                 uj_lakosok = project["hasznos_terulet_m2"] // 30
                 lakosok_szama += uj_lakosok
                 print(f"🏠 +{uj_lakosok} új lakos érkezett!")
+
 
         completed_repairs = [p for p in javitando_epuletek if p["befejezes"] <= kezdo_datum]
         for project in completed_repairs:
@@ -485,7 +472,8 @@ if penzkeret > 0 and lakosok_elegedettsege > min_elegedettseg and lakosok_eleged
                     print("❌ Érvénytelen választás!")
             except ValueError:
                 print("❌ Érvénytelen választás!")
-        
+elif lakosok_elegedettsege >= 100:
+    print("\n🎉A lakosok elégedettsége elérte a 100%-ot! A polgárok örömmel ünnepelnek, és mindenki bizakodva tekint a jövőbe. Gratulálunk! 🎊")
 else:
     print("\n A város csődbe ment!")
 
