@@ -2,8 +2,8 @@ Csapat név: Cordyceps
 
 Csapattagok:
 	Rikovszky Regina
-	Stefanik Csaba
 	Héger Dominik
+	Stefanik Csaba
 
 Iskola: VSZC Boronkay György Műszaki Technikum és Gimnázium
 
