@@ -133,11 +133,11 @@ def uj_epulet_epitese():
     print("\n--- Új épület építése ---")
     while True:
         ep_azon = ep_azon_generálása()
-        nev = input("🏗️ Épület neve: ").strip()
+        nev = input("🏗️ Épület neve: ").strip().capitalize()
         if not nev:
             print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes nevet az épületnek.")
             continue
-        tipus = input("🏢 Épület típusa (lakóház, iroda, stb.): ").strip()
+        tipus = input("🏢 Épület típusa (lakóház, iroda, stb.): ").strip().capitalize()
         if not tipus:
             print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes épülettípust.")
             continue
@@ -257,11 +257,11 @@ def szolgaltatas_bevezetese():
         except ValueError:
             print("❌ Hibás bemenet! Kérlek, egy létező számot adj meg.")
             continue
-        nev = input("🏗️ Szolgáltatás neve: ").strip()
+        nev = input("🏗️ Szolgáltatás neve: ").strip().capitalize()
         if not nev:
             print("❌ Hibás bemenet! Kérlek, egy nevet adj meg az épületnek.")
             continue
-        tipus = input("🏢 Szolgáltatás típusa (egészségügy, oktatás, stb.): ").strip()
+        tipus = input("🏢 Szolgáltatás típusa (egészségügy, oktatás, stb.): ").strip().capitalize()
         if not tipus:
                 print("❌ Hibás bemenet! Kérlek, adj meg egy érvényes szolgáltatástípust.")
                 continue
@@ -314,53 +314,15 @@ def szolgaltatas_torlese():
 import random
 
 esemenyek = [
-    {"nev": "Nem történt semmi", "valoszinuseg": 0.24, "penz_valtozas": 0, "elegedettseg_valtozas": +2, "epulet_kar": None,
-     "leiras": "A város lakói boldogan élik mindennapjaikat."},
-
-    {"nev": "Nem történt semmi", "valoszinuseg": 0.10, "penz_valtozas": 0, "elegedettseg_valtozas": +1, "epulet_kar": None,
-     "leiras": "Egy átlagos nap, mindenki teszi a dolgát."},
-
-    {"nev": "Fellázadás", "valoszinuseg": 0.06, "penz_valtozas": 0, "elegedettseg_valtozas": -30, "epulet_kar": "tobb",
-     "leiras": "Az emberek elégedetlenek! A városházát is megrongálták!"},
-
-    {"nev": "Csatorna törés", "valoszinuseg": 0.09, "penz_valtozas": -7000, "elegedettseg_valtozas": -12, "epulet_kar": "egy",
-     "leiras": "Egy lakóház pincéje elázott a csatorna törése miatt."},
-
-    {"nev": "Erdőtűz", "valoszinuseg": 0.08, "penz_valtozas": -10000, "elegedettseg_valtozas": -18, "epulet_kar": "tobb",
-     "leiras": "Lángokban áll a város pereme, a tűz több épületet is tönkretett!"},
-
-    {"nev": "Arany eső", "valoszinuseg": 0.08, "penz_valtozas": +40000, "elegedettseg_valtozas": +10, "epulet_kar": None,
-     "leiras": "Egy rejtélyes milliomos hatalmas pénzadományt küldött a városnak!"},
-
-    {"nev": "Földrengés", "valoszinuseg": 0.04, "penz_valtozas": -25000, "elegedettseg_valtozas": -20, "epulet_kar": "tobb",
-     "leiras": "Egy pusztító földrengés rengeti meg a várost!"},
-
-    {"nev": "Idegen invázió", "valoszinuseg": 0.03, "penz_valtozas": "random", "elegedettseg_valtozas": -15, "epulet_kar": "egy",
-     "leiras": "Furcsa lények érkeznek a városba, egy épület megrongálódott!"},
-
-    {"nev": "Óriáspatkány-invázió", "valoszinuseg": 0.06, "penz_valtozas": -5000, "elegedettseg_valtozas": -10, "epulet_kar": "egy",
-     "leiras": "Óriáspatkányok lepték el az egyik lakóházat!"},
-
-    {"nev": "Technológiai áttörés", "valoszinuseg": 0.05, "penz_valtozas": +25000, "elegedettseg_valtozas": +15, "epulet_kar": None,
-     "leiras": "Egy helyi tudós forradalmi találmányt fejlesztett ki, amely fellendíti a várost!"},
-
-    {"nev": "Vírusjárvány", "valoszinuseg": 0.03, "penz_valtozas": -30000, "elegedettseg_valtozas": -50, "epulet_kar": "tobb",
-     "leiras": "Egy halálos járvány tombol, és a kórházak túlterheltek!"},
-
-    {"nev": "Fesztivál", "valoszinuseg": 0.05, "penz_valtozas": +5000, "elegedettseg_valtozas": +8, "epulet_kar": None,
-     "leiras": "A város lakói egy hatalmas fesztivált rendeznek, növelve az elégedettséget!"},
-
-    {"nev": "Váratlan adomány", "valoszinuseg": 0.04, "penz_valtozas": +15000, "elegedettseg_valtozas": +5, "epulet_kar": None,
-     "leiras": "Egy gazdag mecénás jelentős összeggel támogatja a várost."},
-
-    {"nev": "Nyugodt nap", "valoszinuseg": 0.08, "penz_valtozas": 0, "elegedettseg_valtozas": +3, "epulet_kar": None,
-     "leiras": "Egy békés nap, minden a megszokott mederben halad."},
-
-    {"nev": "Sikeres termés", "valoszinuseg": 0.05, "penz_valtozas": +7000, "elegedettseg_valtozas": +6, "epulet_kar": None,
-     "leiras": "A gazdák bőséges termést arattak, ami fellendíti a helyi piacokat!"},
-
-    {"nev": "Helyi hős", "valoszinuseg": 0.04, "penz_valtozas": 0, "elegedettseg_valtozas": +10, "epulet_kar": None,
-     "leiras": "Egy bátor polgár hőstette inspirálja a lakosokat, növelve a morált és az elégedettséget!"},
+    {"nev": "Nem történt semmi", "valoszinuseg": 0.4, "penz_valtozas": 0, "elegedettseg_valtozas": 0, "epulet_kar": None},
+    {"nev": "Fellázadás", "valoszinuseg": 0.08, "penz_valtozas": -10000, "elegedettseg_valtozas": -20, "epulet_kar": None},
+    {"nev": "Tornádó", "valoszinuseg": 0.05, "penz_valtozas": -15000, "elegedettseg_valtozas": -30, "epulet_kar": "random"},
+    {"nev": "Csatorna törés", "valoszinuseg": 0.15, "penz_valtozas": -5000, "elegedettseg_valtozas": -10, "epulet_kar": None},
+    {"nev": "Erdőtűz", "valoszinuseg": 0.1, "penz_valtozas": -8000, "elegedettseg_valtozas": -15, "epulet_kar": "random"},
+    {"nev": "Arany eső", "valoszinuseg": 0.12, "penz_valtozas": +15000, "elegedettseg_valtozas": +5, "epulet_kar": None},
+    {"nev": "Földrengés", "valoszinuseg": 0.05, "penz_valtozas": -20000, "elegedettseg_valtozas": -40, "epulet_kar": "random"},
+    {"nev": "Anti-Krisztus", "valoszinuseg": 0.02, "penz_valtozas": 0, "elegedettseg_valtozas": -100, "epulet_kar": None},
+    {"nev": "Idegen invázió", "valoszinuseg": 0.03, "penz_valtozas": "random", "elegedettseg_valtozas": -10, "epulet_kar": "random"}
 ]
 
 
