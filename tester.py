@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 while True:
-    penzkeret = int(input("💰 Add meg az induló pénzkeretet (100000+ arany ajánlott): "))
+    penzkeret = int(input("💰 Add meg az induló pénzkeretet (200000+ arany ajánlott): "))
     if penzkeret <= 0:
         print("Egy 0-nál nagyobb egész számot adj meg.")
         continue
@@ -373,8 +373,6 @@ def varatlan_esemeny():
         print("💀 A világ elpusztult! A játék véget ért!")
         exit()
 
-    print(f"💰 Pénzkeret: {penzkeret} arany")
-    print(f"😊 Lakosok elégedettsége: {lakosok_elegedettsege}%")
 
     return esemeny
 
