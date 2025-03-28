@@ -283,6 +283,9 @@ def szolgaltatas_bevezetese():
                 continue
         try:
             havi_koltseg = int(input("💰 Szolgáltatás havi költsége: ").strip())
+            if havi_koltseg <= 0:
+                print("Egy 0-nál nagyobb egész számot adj meg.")
+                continue
         except ValueError:
             print("❌ Hibás bemenet! Kérlek, számot adj meg.")
             continue
@@ -437,9 +440,9 @@ if penzkeret > 0 and lakosok_elegedettsege > min_elegedettseg:
                     project["levonas_kezdete"] = project["kezdes"]
                     project["levonas_vege"] = project["befejezes"] - relativedelta(months=1)
 
-                if project["levonas_kezdete"] <= kezdo_datum < project["levonas_vege"]:
-                    penzkeret -= project["havi_koltseg"]
-                    project["hatralevo_honap"] -= 1
+                # if project["levonas_kezdete"] <= kezdo_datum < project["levonas_vege"]:
+                #     penzkeret -= project["havi_koltseg"]
+                #     project["hatralevo_honap"] -= 1
 
 
         elkeszult_projektek = [p for p in leendo_epuletek if p["befejezes"] <= kezdo_datum and not p.get("kesz", False)]
