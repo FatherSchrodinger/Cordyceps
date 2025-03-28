@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 while True:
-    penzkeret = int(input("💰 Add meg az induló pénzkeretet (100000+ ajánlott): "))
+    penzkeret = int(input("💰 Add meg az induló pénzkeretet (100000+ arany ajánlott): "))
     if penzkeret <= 0:
         print("Egy 0-nál nagyobb egész számot adj meg.")
         continue
@@ -314,15 +314,15 @@ def szolgaltatas_torlese():
 import random
 
 esemenyek = [
-    {"nev": "Nem történt semmi", "valoszinuseg": 0.4, "penz_valtozas": 0, "elegedettseg_valtozas": 0, "epulet_kar": None},
-    {"nev": "Fellázadás", "valoszinuseg": 0.08, "penz_valtozas": -10000, "elegedettseg_valtozas": -20, "epulet_kar": None},
-    {"nev": "Tornádó", "valoszinuseg": 0.05, "penz_valtozas": -15000, "elegedettseg_valtozas": -30, "epulet_kar": "random"},
-    {"nev": "Csatorna törés", "valoszinuseg": 0.15, "penz_valtozas": -5000, "elegedettseg_valtozas": -10, "epulet_kar": None},
-    {"nev": "Erdőtűz", "valoszinuseg": 0.1, "penz_valtozas": -8000, "elegedettseg_valtozas": -15, "epulet_kar": "random"},
-    {"nev": "Arany eső", "valoszinuseg": 0.12, "penz_valtozas": +15000, "elegedettseg_valtozas": +5, "epulet_kar": None},
-    {"nev": "Földrengés", "valoszinuseg": 0.05, "penz_valtozas": -20000, "elegedettseg_valtozas": -40, "epulet_kar": "random"},
-    {"nev": "Anti-Krisztus", "valoszinuseg": 0.02, "penz_valtozas": 0, "elegedettseg_valtozas": -100, "epulet_kar": None},
-    {"nev": "Idegen invázió", "valoszinuseg": 0.03, "penz_valtozas": "random", "elegedettseg_valtozas": -10, "epulet_kar": "random"}
+    {"nev": "Nem történt semmi", "valoszinuseg": 0.4, "penz_valtozas": 0, "elegedettseg_valtozas": 0, "epulet_kar": None, "leiras": "Nincs változás."},
+    {"nev": "Fellázadás", "valoszinuseg": 0.08, "penz_valtozas": -10000, "elegedettseg_valtozas": -20, "epulet_kar": None, "leiras": "A lakosság fellázad, ami pénzügyi és elégedettségi csökkenést okoz."},
+    {"nev": "Tornádó", "valoszinuseg": 0.05, "penz_valtozas": -15000, "elegedettseg_valtozas": -30, "epulet_kar": "random", "leiras": "Tornádó pusztítást végez, és károkat okozhat az épületekben."},
+    {"nev": "Csatorna törés", "valoszinuseg": 0.15, "penz_valtozas": -5000, "elegedettseg_valtozas": -10, "epulet_kar": None, "leiras": "A csatornarendszer törése problémákat okoz, és pénzügyi kárt."},
+    {"nev": "Erdőtűz", "valoszinuseg": 0.1, "penz_valtozas": -8000, "elegedettseg_valtozas": -15, "epulet_kar": "random", "leiras": "Erdőtűz keletkezik, ami pénzügyi veszteséget és elégedettségcsökkenést okoz."},
+    {"nev": "Arany eső", "valoszinuseg": 0.12, "penz_valtozas": +15000, "elegedettseg_valtozas": +5, "epulet_kar": None, "leiras": "Arany eső hull, ami gazdasági növekedést és enyhe elégedettség növekedést eredményez."},
+    {"nev": "Földrengés", "valoszinuseg": 0.05, "penz_valtozas": -20000, "elegedettseg_valtozas": -40, "epulet_kar": "random", "leiras": "Földrengés következik be, mely súlyos károkat és magas pénzügyi veszteséget okoz."},
+    {"nev": "Anti-Krisztus", "valoszinuseg": 0.02, "penz_valtozas": 0, "elegedettseg_valtozas": -100, "epulet_kar": None, "leiras": "Az Anti-Krisztus megjelenése mély szellemi válságot és elégedettségvesztést okoz."},
+    {"nev": "Idegen invázió", "valoszinuseg": 0.03, "penz_valtozas": "random", "elegedettseg_valtozas": -10, "epulet_kar": "random", "leiras": "Idegenek inváziója következik, amely károkat okozhat mind anyagi, mind szellemi szinten."}
 ]
 
 
