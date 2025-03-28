@@ -32,6 +32,7 @@ while True:
 
     except ValueError:
         print("❌ Hiba: Érvénytelen bemenet! Kérlek, próbáld újra.")
+        continue
 
 
 print("\n--- Szimulációs beállítások ---")
@@ -152,6 +153,7 @@ def uj_epulet_epitese():
                 continue
         except ValueError:
             print("❌ Hiba: Érvénytelen bemenet! Kérlek, próbáld újra")
+            continue
         kezdes = kezdo_datum
         befejezes = kezdes + relativedelta(months=projekt_ido_honap)
         havi_koltseg = koltseg // projekt_ido_honap
@@ -214,6 +216,7 @@ def karbantartas():
                 continue
         except ValueError:
             print("❌ Hiba: Érvénytelen bemenet! Kérlek, próbáld újra.")
+            continue
         kezdes = kezdo_datum
         befejezes = kezdes + relativedelta(months=projekt_ido_honap)
 
@@ -271,6 +274,7 @@ def szolgaltatas_bevezetese():
                 continue
         except ValueError:
             print("❌ Hiba: Érvénytelen bemenet! Kérlek, próbáld újra.")
+            continue
         uj_szolg_id = max((szolg.szolg_azon for szolg in szolgaltatasok_list), default=0) + 1
 
         uj_szolgaltatas = Szolgaltatasok(uj_szolg_id, nev, tipus, uzemelteto_epulet)
@@ -309,6 +313,7 @@ def szolgaltatas_torlese():
             break
         except ValueError:
             print("❌ Hiba: Érvénytelen bemenet! Kérlek, próbáld újra.")
+            continue
 esemenyek = [
     {"nev": "Nem történt semmi", "valoszinuseg": 0.5, "penz_valtozas": 0, "elegedettseg_valtozas": 0, "epulet_kar": None, "leiras": "Nincs változás."},
     {"nev": "Fellázadás", "valoszinuseg": 0.07, "penz_valtozas": -10000, "elegedettseg_valtozas": -20, "epulet_kar": None, "leiras": "A lakosság fellázad, ami pénzügyi és elégedettségi csökkenést okoz."},
@@ -493,6 +498,7 @@ if penzkeret > 0 and lakosok_elegedettsege > min_elegedettseg:
                     print("❌ Érvénytelen választás!")
             except ValueError:
                 print("❌ Érvénytelen választás!")
+                continue
 elif lakosok_elegedettsege >= 100:
     print("\n🎉A lakosok elégedettsége elérte a 100%-ot! A polgárok örömmel ünnepelnek, és mindenki bizakodva tekint a jövőbe. Gratulálunk! 🎊")
 else:
