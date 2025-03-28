@@ -8,7 +8,6 @@ while True:
     if penzkeret <= 0:
         print("Egy 0-nál nagyobb egész számot adj meg.")
         continue
-
     try:
         lakosok_elegedettsege = int(input("😊 Add meg a lakosok induló elégedettségét (1-99): "))
         if lakosok_elegedettsege <= 0 or lakosok_elegedettsege > 99:
@@ -253,7 +252,7 @@ def szolgaltatas_bevezetese():
             print(f"{i}. {epulet.nev} ({epulet.tipus}) - ID: {epulet.ep_azon}")
 
         try:
-            uzemelteto_epulet = int(input("Adja meg a szolgáltatás üzemeltető épületét (ID): ").strip())
+            uzemelteto_epulet = int(input("Adja meg a szolgáltatás üzemeltető épületnek a sorszámát: ").strip())
             if uzemelteto_epulet not in epuletek_azonositoi:
                 print("❌ Hibás bemenet! Kérlek, egy létező számot adj meg.")
                 continue
@@ -469,7 +468,7 @@ if penzkeret > 0 and lakosok_elegedettsege > min_elegedettseg and lakosok_eleged
 
         while True:
             try:
-                valtozas = int(input("🔄 0: Kihagy | 1: Építés | 2: Karbantartás | 3: Szolgáltatás bevezetése | 4: Szolgáltatás törlése | 5: Kilépés: "))
+                valtozas = int(input("🔄 0: Következő hónap | 1: Építés | 2: Karbantartás | 3: Szolgáltatás bevezetése | 4: Szolgáltatás törlése | 5: Kilépés: "))
                 
                 if valtozas == 0:
                     break
